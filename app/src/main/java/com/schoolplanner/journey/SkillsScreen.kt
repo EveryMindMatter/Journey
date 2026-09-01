@@ -2,6 +2,8 @@ package com.schoolplanner.journey
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -138,7 +140,7 @@ fun SkillsScreen(
             )
 
             // =========================
-            // SKILLS LIST
+            // SKILLS LIST (SCROLLABLE, UNLIMITED)
             // =========================
 
             if (skills.isEmpty()) {
@@ -179,62 +181,81 @@ fun SkillsScreen(
                     }
                 }
 
+                Spacer(
+                    modifier =
+                        Modifier.weight(1f)
+                )
+
             } else {
 
-                skills.forEach { skill ->
+                // The list itself scrolls independently and takes
+                // all remaining vertical space, no matter how many
+                // skills are added.
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
 
-                    val remainingSeconds =
-                        deletionTimers[skill]
+                    verticalArrangement =
+                        Arrangement.spacedBy(12.dp),
 
-                    val level =
-                        skillLevels[skill] ?: 0.0
+                    contentPadding =
+                        PaddingValues(bottom = 8.dp)
+                ) {
 
-                    SkillCard(
-                        skillName = skill,
-                        level = level,
-                        remainingSeconds =
-                            remainingSeconds,
+                    items(
+                        items = skills,
+                        key = { it }
+                    ) { skill ->
 
-                        onDelete = {
+                        val remainingSeconds =
+                            deletionTimers[skill]
 
-                            /*
-                             * Start the 60-second
-                             * thinking period.
-                             */
-                            if (remainingSeconds == null) {
+                        val level =
+                            skillLevels[skill] ?: 0.0
 
+                        SkillCard(
+                            skillName = skill,
+                            level = level,
+                            remainingSeconds =
+                                remainingSeconds,
+
+                            onDelete = {
+
+                                /*
+                                 * Start the 60-second
+                                 * thinking period.
+                                 */
+                                if (remainingSeconds == null) {
+
+                                    deletionTimers =
+                                        deletionTimers + (
+                                                skill to 60
+                                                )
+                                }
+                            },
+
+                            onCancelDelete = {
+
+                                /*
+                                 * Cancel deletion
+                                 * and restore the skill.
+                                 */
                                 deletionTimers =
-                                    deletionTimers + (
-                                            skill to 60
-                                            )
+                                    deletionTimers - skill
                             }
-                        },
-
-                        onCancelDelete = {
-
-                            /*
-                             * Cancel deletion
-                             * and restore the skill.
-                             */
-                            deletionTimers =
-                                deletionTimers - skill
-                        }
-                    )
-
-                    Spacer(
-                        modifier =
-                            Modifier.height(12.dp)
-                    )
+                        )
+                    }
                 }
             }
 
             Spacer(
                 modifier =
-                    Modifier.weight(1f)
+                    Modifier.height(16.dp)
             )
 
             // =========================
-            // ADD SKILL
+            // ADD SKILL (ALWAYS FIXED AT THE BOTTOM)
             // =========================
 
             Button(

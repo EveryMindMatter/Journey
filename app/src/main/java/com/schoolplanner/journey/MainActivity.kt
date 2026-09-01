@@ -1,4 +1,3 @@
-
 package com.schoolplanner.journey
 
 import android.content.Context
@@ -11,6 +10,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -64,16 +65,13 @@ fun JourneyApp() {
     }
 
     val context = LocalContext.current
-
     val scope = rememberCoroutineScope()
-
 
     // =================================================
     // DATA STORE
     // =================================================
 
     val dataStore = remember {
-
         JourneyDataStore(
             context.applicationContext
         )
@@ -84,7 +82,6 @@ fun JourneyApp() {
     )
 
     val skills = savedData.skills
-
     val skillLevels = savedData.levels
 
 
@@ -97,38 +94,30 @@ fun JourneyApp() {
         when (currentScreen) {
 
             "home" -> {
-
-                // HOME:
-                // Do absolutely nothing.
+                // На головному екрані нічого не робимо.
             }
 
             "settings" -> {
-
                 currentScreen = "home"
             }
 
             "about" -> {
-
                 currentScreen = "settings"
             }
 
             "skills" -> {
-
                 currentScreen = "settings"
             }
 
             "addSkill" -> {
-
                 currentScreen = "skills"
             }
 
             "timer" -> {
-
                 currentScreen = "home"
             }
 
             "survey" -> {
-
                 currentScreen = "home"
             }
         }
@@ -148,26 +137,9 @@ fun JourneyApp() {
     }
 
     var showSurvey by remember {
-
         mutableStateOf(false)
     }
 
-
-    /*
-     * Survey schedule:
-     *
-     * First launch:
-     *   Survey does NOT appear.
-     *
-     * Then:
-     *   Wait 15 days.
-     *
-     * After 15 days:
-     *   Survey appears automatically.
-     *
-     * TAKE SURVEY:
-     *   Starts another 15-day countdown.
-     */
 
     LaunchedEffect(Unit) {
 
@@ -178,10 +150,6 @@ fun JourneyApp() {
             )
 
         if (nextSurveyTime == 0L) {
-
-            // =========================================
-            // FIRST LAUNCH
-            // =========================================
 
             val fifteenDays =
                 15L *
@@ -205,10 +173,6 @@ fun JourneyApp() {
             showSurvey = false
 
         } else {
-
-            // =========================================
-            // NORMAL CHECK
-            // =========================================
 
             showSurvey =
                 System.currentTimeMillis() >=
@@ -237,11 +201,8 @@ fun JourneyApp() {
                     try {
 
                         BackupManager.exportBackup(
-
                             context = context,
-
                             uri = uri,
-
                             data = savedData
                         )
 
@@ -278,12 +239,8 @@ fun JourneyApp() {
                             )
 
                         dataStore.saveData(
-
-                            skills =
-                                importedData.skills,
-
-                            levels =
-                                importedData.levels
+                            skills = importedData.skills,
+                            levels = importedData.levels
                         )
 
                     } catch (e: Exception) {
@@ -303,17 +260,10 @@ fun JourneyApp() {
 
         colorScheme = darkColorScheme(
 
-            primary =
-                BrightBlue,
-
-            secondary =
-                LightBlue,
-
-            background =
-                DeepBlue,
-
-            surface =
-                CardBlue
+            primary = BrightBlue,
+            secondary = LightBlue,
+            background = DeepBlue,
+            surface = CardBlue
         )
     ) {
 
@@ -329,7 +279,6 @@ fun JourneyApp() {
 
             when (currentScreen) {
 
-
                 // =================================================
                 // HOME
                 // =================================================
@@ -338,22 +287,16 @@ fun JourneyApp() {
 
                     HomeScreen(
 
-                        skills =
-                            skills,
+                        skills = skills,
 
-                        skillLevels =
-                            skillLevels,
+                        skillLevels = skillLevels,
 
                         onSettings = {
-
-                            currentScreen =
-                                "settings"
+                            currentScreen = "settings"
                         },
 
                         onInvestTime = {
-
-                            currentScreen =
-                                "timer"
+                            currentScreen = "timer"
                         }
                     )
                 }
@@ -368,21 +311,15 @@ fun JourneyApp() {
                     SettingsScreen(
 
                         onBack = {
-
-                            currentScreen =
-                                "home"
+                            currentScreen = "home"
                         },
 
                         onSkills = {
-
-                            currentScreen =
-                                "skills"
+                            currentScreen = "skills"
                         },
 
                         onAbout = {
-
-                            currentScreen =
-                                "about"
+                            currentScreen = "about"
                         },
 
                         onExportBackup = {
@@ -397,9 +334,7 @@ fun JourneyApp() {
                             importLauncher.launch(
 
                                 arrayOf(
-
                                     "application/json",
-
                                     "text/plain"
                                 )
                             )
@@ -417,9 +352,7 @@ fun JourneyApp() {
                     AboutScreen(
 
                         onBack = {
-
-                            currentScreen =
-                                "settings"
+                            currentScreen = "settings"
                         }
                     )
                 }
@@ -433,22 +366,16 @@ fun JourneyApp() {
 
                     SkillsScreen(
 
-                        skills =
-                            skills,
+                        skills = skills,
 
-                        skillLevels =
-                            skillLevels,
+                        skillLevels = skillLevels,
 
                         onBack = {
-
-                            currentScreen =
-                                "settings"
+                            currentScreen = "settings"
                         },
 
                         onAddSkill = {
-
-                            currentScreen =
-                                "addSkill"
+                            currentScreen = "addSkill"
                         },
 
                         onDeleteSkill = { skill ->
@@ -473,9 +400,7 @@ fun JourneyApp() {
                     AddSkillScreen(
 
                         onBack = {
-
-                            currentScreen =
-                                "skills"
+                            currentScreen = "skills"
                         },
 
                         onCreate = { skillName ->
@@ -484,13 +409,8 @@ fun JourneyApp() {
                                 skillName.trim()
 
                             if (
-
                                 cleanName.isNotEmpty() &&
-
-                                !skills.contains(
-                                    cleanName
-                                )
-
+                                !skills.contains(cleanName)
                             ) {
 
                                 scope.launch {
@@ -501,8 +421,7 @@ fun JourneyApp() {
                                 }
                             }
 
-                            currentScreen =
-                                "skills"
+                            currentScreen = "skills"
                         }
                     )
                 }
@@ -516,11 +435,9 @@ fun JourneyApp() {
 
                     InvestTimeScreen(
 
-                        skills =
-                            skills,
+                        skills = skills,
 
-                        skillLevels =
-                            skillLevels,
+                        skillLevels = skillLevels,
 
                         onAddTime = {
                                 skill,
@@ -529,18 +446,14 @@ fun JourneyApp() {
                             scope.launch {
 
                                 dataStore.addTime(
-
                                     skill,
-
                                     minutes
                                 )
                             }
                         },
 
                         onBack = {
-
-                            currentScreen =
-                                "home"
+                            currentScreen = "home"
                         }
                     )
                 }
@@ -555,9 +468,7 @@ fun JourneyApp() {
                     SurveyScreen(
 
                         onCancel = {
-
-                            currentScreen =
-                                "home"
+                            currentScreen = "home"
                         },
 
                         onSurveyOpened = {
@@ -583,8 +494,7 @@ fun JourneyApp() {
 
                             showSurvey = false
 
-                            currentScreen =
-                                "home"
+                            currentScreen = "home"
                         }
                     )
                 }
@@ -596,11 +506,8 @@ fun JourneyApp() {
             // =================================================
 
             if (
-
                 showSurvey &&
-
                 currentScreen == "home"
-
             ) {
 
                 Box(
@@ -622,25 +529,10 @@ fun JourneyApp() {
 
                         onCancel = {
 
-                            /*
-                             * CANCEL only closes
-                             * the current survey.
-                             *
-                             * It does NOT reset
-                             * the 15-day timer.
-                             */
-
-                            showSurvey =
-                                false
+                            showSurvey = false
                         },
 
                         onSurveyOpened = {
-
-                            /*
-                             * TAKE SURVEY:
-                             * Start a new 15-day
-                             * countdown immediately.
-                             */
 
                             val fifteenDays =
                                 15L *
@@ -661,8 +553,7 @@ fun JourneyApp() {
                                 )
                                 .apply()
 
-                            showSurvey =
-                                false
+                            showSurvey = false
                         }
                     )
                 }
@@ -691,15 +582,14 @@ fun HomeScreen(
     val background =
         Brush.verticalGradient(
 
-            colors =
-                listOf(
+            colors = listOf(
 
-                    DeepBlue,
+                DeepBlue,
 
-                    DarkBlue,
+                DarkBlue,
 
-                    Color(0xFF0B315A)
-                )
+                Color(0xFF0B315A)
+            )
         )
 
 
@@ -713,7 +603,6 @@ fun HomeScreen(
 
             skills
                 .map {
-
                     skillLevels[it] ?: 0.0
                 }
                 .average()
@@ -725,9 +614,7 @@ fun HomeScreen(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(
-                    background
-                )
+                .background(background)
     ) {
 
         Column(
@@ -760,14 +647,11 @@ fun HomeScreen(
 
                 Text(
 
-                    text =
-                        "JOURNEY",
+                    text = "JOURNEY",
 
-                    color =
-                        Color.White,
+                    color = Color.White,
 
-                    fontSize =
-                        24.sp,
+                    fontSize = 24.sp,
 
                     fontWeight =
                         FontWeight.Bold
@@ -776,14 +660,11 @@ fun HomeScreen(
 
                 Text(
 
-                    text =
-                        "⚙",
+                    text = "⚙",
 
-                    color =
-                        LightBlue,
+                    color = LightBlue,
 
-                    fontSize =
-                        26.sp,
+                    fontSize = 26.sp,
 
                     modifier =
                         Modifier.clickable {
@@ -796,7 +677,7 @@ fun HomeScreen(
 
             Spacer(
                 modifier =
-                    Modifier.height(42.dp)
+                    Modifier.height(32.dp)
             )
 
 
@@ -806,14 +687,11 @@ fun HomeScreen(
 
             Text(
 
-                text =
-                    "YOUR JOURNEY",
+                text = "YOUR JOURNEY",
 
-                color =
-                    LightBlue,
+                color = LightBlue,
 
-                fontSize =
-                    14.sp,
+                fontSize = 14.sp,
 
                 fontWeight =
                     FontWeight.Bold
@@ -846,7 +724,7 @@ fun HomeScreen(
 
             Spacer(
                 modifier =
-                    Modifier.height(20.dp)
+                    Modifier.height(16.dp)
             )
 
 
@@ -858,7 +736,6 @@ fun HomeScreen(
             LinearProgressIndicator(
 
                 progress = {
-
                     progress
                 },
 
@@ -877,27 +754,26 @@ fun HomeScreen(
 
             Spacer(
                 modifier =
-                    Modifier.height(32.dp)
+                    Modifier.height(24.dp)
             )
 
 
             // =================================================
-            // SKILLS
+            // YOUR SKILLS
             // =================================================
 
             Card(
 
                 modifier =
-                    Modifier.fillMaxWidth(),
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
 
                 shape =
-                    RoundedCornerShape(
-                        24.dp
-                    ),
+                    RoundedCornerShape(24.dp),
 
                 colors =
                     CardDefaults.cardColors(
-
                         containerColor =
                             CardBlue
                     )
@@ -906,9 +782,9 @@ fun HomeScreen(
                 Column(
 
                     modifier =
-                        Modifier.padding(
-                            20.dp
-                        )
+                        Modifier
+                            .fillMaxSize()
+                            .padding(20.dp)
                 ) {
 
                     Text(
@@ -929,97 +805,136 @@ fun HomeScreen(
 
                     Spacer(
                         modifier =
-                            Modifier.height(16.dp)
+                            Modifier.height(12.dp)
                     )
 
 
                     if (skills.isEmpty()) {
 
-                        Text(
-
-                            text =
-                                "No skills yet",
-
-                            color =
-                                Color.White,
-
-                            fontSize =
-                                17.sp
-                        )
-
-
-                        Spacer(
+                        Column(
                             modifier =
-                                Modifier.height(6.dp)
-                        )
+                                Modifier.fillMaxSize(),
+                            verticalArrangement =
+                                Arrangement.Center,
+                            horizontalAlignment =
+                                Alignment.CenterHorizontally
+                        ) {
+
+                            Text(
+
+                                text =
+                                    "No skills yet",
+
+                                color =
+                                    Color.White,
+
+                                fontSize =
+                                    17.sp
+                            )
 
 
-                        Text(
+                            Spacer(
+                                modifier =
+                                    Modifier.height(6.dp)
+                            )
 
-                            text =
-                                "Create your first skill in Settings.",
 
-                            color =
-                                MutedBlue,
+                            Text(
 
-                            fontSize =
-                                13.sp
-                        )
+                                text =
+                                    "Create your first skill in Settings.",
+
+                                color =
+                                    MutedBlue,
+
+                                fontSize =
+                                    13.sp
+                            )
+                        }
 
                     } else {
 
-                        skills.forEach { skill ->
+                        // =================================================
+                        // UNLIMITED SCROLLABLE SKILLS
+                        // =================================================
 
-                            Row(
+                        LazyColumn(
 
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(
-                                            vertical = 8.dp
-                                        ),
+                            modifier =
+                                Modifier.fillMaxSize(),
 
-                                verticalAlignment =
-                                    Alignment.CenterVertically
-                            ) {
+                            verticalArrangement =
+                                Arrangement.spacedBy(
+                                    4.dp
+                                ),
 
-                                Text(
+                            contentPadding =
+                                PaddingValues(
+                                    bottom = 8.dp
+                                )
+                        ) {
 
-                                    text =
-                                        skill,
+                            items(
 
-                                    color =
-                                        Color.White,
+                                items = skills,
 
-                                    fontSize =
-                                        16.sp,
+                                key = {
+                                    it
+                                }
+
+                            ) { skill ->
+
+                                Row(
 
                                     modifier =
-                                        Modifier.weight(
-                                            1f
-                                        )
-                                )
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(
+                                                vertical = 8.dp
+                                            ),
+
+                                    verticalAlignment =
+                                        Alignment.CenterVertically
+                                ) {
+
+                                    Text(
+
+                                        text =
+                                            skill,
+
+                                        color =
+                                            Color.White,
+
+                                        fontSize =
+                                            16.sp,
+
+                                        modifier =
+                                            Modifier.weight(
+                                                1f
+                                            )
+                                    )
 
 
-                                Text(
+                                    Text(
 
-                                    text =
-                                        "Lv. %.2f".format(
+                                        text =
+                                            "Lv. %.2f".format(
 
-                                            skillLevels[
-                                                skill
-                                            ] ?: 0.0
-                                        ),
+                                                skillLevels[
+                                                    skill
+                                                ] ?: 0.0
+                                            ),
 
-                                    color =
-                                        LightBlue,
+                                        color =
+                                            LightBlue,
 
-                                    fontSize =
-                                        13.sp,
+                                        fontSize =
+                                            13.sp,
 
-                                    fontWeight =
-                                        FontWeight.Bold
-                                )
+                                        fontWeight =
+                                            FontWeight.Bold
+                                    )
+                                }
                             }
                         }
                     }
@@ -1029,7 +944,7 @@ fun HomeScreen(
 
             Spacer(
                 modifier =
-                    Modifier.weight(1f)
+                    Modifier.height(16.dp)
             )
 
 
@@ -1079,9 +994,13 @@ fun HomeScreen(
 
             Spacer(
                 modifier =
-                    Modifier.height(18.dp)
+                    Modifier.height(12.dp)
             )
 
+
+            // =================================================
+            // FOOTER
+            // =================================================
 
             Text(
 

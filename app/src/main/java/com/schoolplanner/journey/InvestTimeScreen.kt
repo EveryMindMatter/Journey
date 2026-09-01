@@ -3,6 +3,8 @@ package com.schoolplanner.journey
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -84,6 +86,12 @@ fun InvestTimeScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            // =========================
+            // SKILLS LIST (SCROLLABLE, UNLIMITED)
+            // Takes all remaining space above the
+            // "HOW MUCH?" section, which stays fixed.
+            // =========================
+
             if (skills.isEmpty()) {
 
                 Card(
@@ -102,56 +110,71 @@ fun InvestTimeScreen(
                     )
                 }
 
+                Spacer(modifier = Modifier.weight(1f))
+
             } else {
 
-                skills.forEach { skill ->
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
 
-                    val selected = selectedSkill == skill
+                    contentPadding =
+                        PaddingValues(vertical = 5.dp)
+                ) {
 
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 5.dp)
-                            .clickable {
-                                selectedSkill = skill
-                            },
-                        shape = RoundedCornerShape(18.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor =
-                                if (selected) BrightBlue
-                                else CardBlue
-                        )
-                    ) {
+                    items(
+                        items = skills,
+                        key = { it }
+                    ) { skill ->
 
-                        Row(
+                        val selected = selectedSkill == skill
+
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(18.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                .padding(vertical = 5.dp)
+                                .clickable {
+                                    selectedSkill = skill
+                                },
+                            shape = RoundedCornerShape(18.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor =
+                                    if (selected) BrightBlue
+                                    else CardBlue
+                            )
                         ) {
 
-                            Text(
-                                text = if (selected) "●" else "○",
-                                color = Color.White,
-                                fontSize = 20.sp
-                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(18.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
 
-                            Spacer(modifier = Modifier.width(14.dp))
+                                Text(
+                                    text = if (selected) "●" else "○",
+                                    color = Color.White,
+                                    fontSize = 20.sp
+                                )
 
-                            Text(
-                                text = skill,
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                modifier = Modifier.weight(1f)
-                            )
+                                Spacer(modifier = Modifier.width(14.dp))
 
-                            Text(
-                                text = "Lv. %.2f".format(
-                                    skillLevels[skill] ?: 0.0
-                                ),
-                                color = SoftBlue,
-                                fontSize = 13.sp
-                            )
+                                Text(
+                                    text = skill,
+                                    color = Color.White,
+                                    fontSize = 16.sp,
+                                    modifier = Modifier.weight(1f)
+                                )
+
+                                Text(
+                                    text = "Lv. %.2f".format(
+                                        skillLevels[skill] ?: 0.0
+                                    ),
+                                    color = SoftBlue,
+                                    fontSize = 13.sp
+                                )
+                            }
                         }
                     }
                 }
@@ -191,7 +214,7 @@ fun InvestTimeScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 onClick = {
